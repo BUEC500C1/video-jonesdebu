@@ -43,3 +43,5 @@ if q.empty() is True:
 else:
     print("queue is not empty")
     print(q.qsize())
+
+#TODO: 1. Figure out how to get the functions to run aftter getting them from Queue.get()

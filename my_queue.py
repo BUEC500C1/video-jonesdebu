@@ -5,26 +5,19 @@ import subprocess
 import threading
 #import twitter api function here enter arguments from here
 #import queue function and twitter function into a main program
-#input = functions as a list and arguments for functions as a list
-
-# create queue with constructor
-q = queue.Queue()
+#input = queue to be handled function name and arguments
 
 #define some dummy worker functions for testing
-def worker1( a ):
-    print(a)
+def worker1( a, b ):
+    print(str(a) + str(b))
     sleep(1)
 
-def worker2( b ):
-    print(b)
+def worker2( a, b ):
+    print(str(a) + str(b))
     sleep(1)
 
-def worker3( c ):
-    print(c)
-
-#dummy arguments for the dummy functions for testing
-func_list = [worker1, worker2, worker3]
-arg_list = ['worker1', 'worker2', 'worker3']
+def worker3( a, b ):
+    print(str(a) + str(b))
 
 #check the items in the queue (empty or not and if not how many items)
 def queue_check(q):
@@ -36,23 +29,17 @@ def queue_check(q):
         print("current queue size is" + ' ' + str(q.qsize()))
         print()
 
-def queue_handler(function_list, argument_list):
-    q.put( (function_list[0], argument_list[0]) )
-    q.put( (function_list[1], argument_list[1]) )
-    q.put( (function_list[2], argument_list[2]) )
+#num_args is the number of arguments per function
+def muti_thread_queue(q, func_name, args):
 
-    # check queue items
-    queue_check(q)
+    q.put( func_name, args )
 
 # Get the function and arguments from the queue and add them to a list
-    index = 1;
     threads = []
     while q.empty() is False:
-        items = q.get()
-        func = items[0]
-        args = items[1:]
-        thread = threading.Thread(target=func, args=args, name=str(index))
-        index+=1
+        func = q.get()
+        args = args
+        thread = threading.Thread(target=func, args=args, name=str(func_name))
         threads.append(thread)
 
     array_length = len(threads)
@@ -63,16 +50,10 @@ def queue_handler(function_list, argument_list):
         print("active thread count:" + ' ' + str(threading.active_count()))
         print()
 
-
-# Check threads to see if they are still alive (make sure threads have been killed)
-    sleep (1) #wait for threads to finish
+    sleep(3)
     for thread in range(array_length):
-        print(str(threads[thread].name) +' is alive: ' + str(threads[thread].is_alive()))
-        print()
-
-#becasue we sleep for 3 seconds before checking this they should all be false
-
-    queue_check(q)
+        if threads[thread].is_alive() is False:
+            print(str(threads[thread].name) + ' is dead')
 
 #return statement does not work to execute in thread
 #worker2() # prints nothing
@@ -83,4 +64,10 @@ def queue_handler(function_list, argument_list):
 # start thread then subprocess library to run thread
 
 #there are three threads running at the end because workers 1 and 2 are sleeping when worker#3 starts
-queue_handler(func_list, arg_list)
+q = queue.Queue()
+muti_thread_queue(q, worker1, ('worker1 ', 'is working'))
+muti_thread_queue(q, worker2, ('worker2 ', 'is working'))
+muti_thread_queue(q, worker3, ('worker3 ', 'is working'))
+
+
+#becasue we sleep for 3 seconds before checking this they should all be false

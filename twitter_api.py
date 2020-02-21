@@ -1,5 +1,7 @@
 import tweepy
 
+#   using code provided by Stefan as a guide for keys file parsing and exception handling:
+#   https://github.com/BUEC500C1/video-djtrinh/blob/71cbafb28eb6f86e4c59aacd63b3ee9b458a3032/twitter_api.py#L5
 ## TODO:
 #   1.  get twitter feed using old twitter api from last homework assignment
 #   2.  convert text from feed to image
@@ -15,8 +17,17 @@ import tweepy
     secret = 'v6gQMToztBiD5nEwNLoNIkxqlqBVVm5nkoVWTFwtv78Y5'
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(key, secret)
-    self.api = tweepy.API(auth)
+    api = tweepy.API(auth)
 
-def user_images(consumer_key, consumer_secret, key, secret, userid):
+def user_images(api, username):
     images = []
     try:
+        for tweet in tweepy.Cursor(api.user_timeline, screen_name=username, count=10, include_entities=TRUE):
+            if 'media' in tweet.entities:
+                for result in tweet.entities['media']
+                    if result['type'] == 'photo':
+                        images.append(result['media_url'])
+        return images
+    except tweepy.TweepError as error_statement
+        print(error_statement)
+        return images

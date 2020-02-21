@@ -7,21 +7,16 @@ import tweepy
 
 # User requires consumer_key, consumer_secret, key, secret, and userid
 
-def read_image(consumer_key, consumer_secret, key, secret, userid):
-    #twitter API OAuth 2 Authentication
+#def init_keys(consumer_key, consumer_secret, key, secret):
+    #OuthHandler
+    consumer_key = 'JBuEXV3EgqbsgIe2PUQf9YtRy'
+    consumer_secret = 'AaoIK1QkznGO9pfasUnVMzzaWExPQGvO1QWtDcmdgB9wdkWel7'
+    key = '1222366331825090560-YzbK3HyrVsr1Cp0JtNY2k88ttegIJN'
+    secret = 'v6gQMToztBiD5nEwNLoNIkxqlqBVVm5nkoVWTFwtv78Y5'
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(key, secret)
+    self.api = tweepy.API(auth)
 
-    api = tweepy.API(auth)
-
-    #get user timeline for tweets to convert
-    user = api.get_user(userid)
-    tweets = api.user_timeline(id=userid)
-
-    images_list = [] # list of media_urls
-    for status in tweepy.Cursor(api.user_timeline, id=userid).items():
-        if 'media' in status.entities:
-            for images in status.entities['media']:
-                images_list.append(images['media_url'])
-        if 'text' in status.entities:
-            #convert text to an image and append it to the images_list
+def user_images(consumer_key, consumer_secret, key, secret, userid):
+    images = []
+    try:

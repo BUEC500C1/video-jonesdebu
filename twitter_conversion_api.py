@@ -18,9 +18,10 @@ def read_image(consumer_key, consumer_secret, key, secret, userid):
     user = api.get_user(userid)
     tweets = api.user_timeline(id=userid)
 
-    images_list = []
-    for status in tweepy.Cursor(api.user_timeline, id="Donovan01060515").items():
+    images_list = [] # list of media_urls
+    for status in tweepy.Cursor(api.user_timeline, id=userid).items():
         if 'media' in status.entities:
             for images in status.entities['media']:
                 images_list.append(images['media_url'])
         if 'text' in status.entities:
+            #convert text to an image and append it to the images_list

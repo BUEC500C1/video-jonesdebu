@@ -11,23 +11,26 @@ import tweepy
 
 #def init_keys(consumer_key, consumer_secret, key, secret):
     #OuthHandler
-    consumer_key = 'JBuEXV3EgqbsgIe2PUQf9YtRy'
-    consumer_secret = 'AaoIK1QkznGO9pfasUnVMzzaWExPQGvO1QWtDcmdgB9wdkWel7'
-    key = '1222366331825090560-YzbK3HyrVsr1Cp0JtNY2k88ttegIJN'
-    secret = 'v6gQMToztBiD5nEwNLoNIkxqlqBVVm5nkoVWTFwtv78Y5'
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(key, secret)
-    api = tweepy.API(auth)
+consumer_key = 'JBuEXV3EgqbsgIe2PUQf9YtRy'
+consumer_secret = 'AaoIK1QkznGO9pfasUnVMzzaWExPQGvO1QWtDcmdgB9wdkWel7'
+key = '1222366331825090560-YzbK3HyrVsr1Cp0JtNY2k88ttegIJN'
+secret = 'v6gQMToztBiD5nEwNLoNIkxqlqBVVm5nkoVWTFwtv78Y5'
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(key, secret)
+api = tweepy.API(auth)
 
 def user_images(api, username):
     images = []
     try:
-        for tweet in tweepy.Cursor(api.user_timeline, screen_name=username, count=10, include_entities=TRUE):
+        for tweet in tweepy.Cursor(api.user_timeline, screen_name=username, count=10, include_entities=True).items():
             if 'media' in tweet.entities:
-                for result in tweet.entities['media']
+                for result in tweet.entities['media']:
                     if result['type'] == 'photo':
                         images.append(result['media_url'])
         return images
-    except tweepy.TweepError as error_statement
+    except tweepy.TweepError as error_statement:
         print(error_statement)
         return images
+
+images = user_images(api, 'Donovan01060515')
+print(len(images))

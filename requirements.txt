@@ -6,3 +6,4 @@ PyOpengl
 visvis
 requests
 wget
+opencv-python

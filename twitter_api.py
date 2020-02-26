@@ -8,6 +8,9 @@ import requests
 from io import BytesIO
 import wget
 import shutil
+import cv2
+import numpy as np
+import glob
 
 #   using code provided by Stefan as a guide for keys file parsing and exception handling:
 #   https://github.com/BUEC500C1/video-djtrinh/blob/71cbafb28eb6f86e4c59aacd63b3ee9b458a3032/twitter_api.py#L5
@@ -59,25 +62,65 @@ def user_tweets(api, username):
         return tweets
 
 # donwload media move to media folder or convert text to image and move to media folder then use opencv2 Video Writer to create a video use os to open() the video
-def vid_creator(images, tweets):
-    os.mkdir('media')
+def vid_creator(images, dir_name, vid_name):
+#If the media folder does not exist create it
+    if os.path.isdir(dir_name) is False: #Shouldnt this be is False then directory does not exist so make the directory?
+        os.mkdir(dir_name)
+    elif os.path.isdir(dir_name) is True:
+        print("Directory already exists. Media will be added to the existing directory of the same name")
+
+    if '.avi' not in vid_name:
+        print('ERROR: vid_name must have .avi extension')
+        return
+
+#downlaod images and move them to the media folder
     array_len = len(images)
     for index in range(array_len):
         if images[index].find('http://') is 0: # entry is a media_url with http:// at the beginning of the string
             img_filename = wget.download(images[index])
             print(img_filename) # for testing
-            shutil.move(img_filename, 'media/' + str(img_filename))
-            #im = imageio.imread(images[index])
-            #response = requests.get(images[index])
-            #img = Image.open(BytesIO(response.content))
-            #img.show()
-            #sleep( 3 )
+            print(str(dir_name) + '/' + str(img_filename))
+            if os.path.isfile(str(dir_name) + '/' + str(img_filename)) is False:
+                shutil.move(img_filename, dir_name)
+            else:
+                os.remove(img_filename)
+                #im = imageio.imread(images[index])
+                #response = requests.get(images[index])
+                #img = Image.open(BytesIO(response.content))
+                #img.show()
+                #sleep( 3 )
         else:
+            print("nothin")
             #convert text to image, save file, and move it to the media folder
     #outside of the loop create the video, display it, then delete the media directory for clean up
+    img_array = []
+    file_types = ('*.jpg', '*.png')
+    for filename in glob.glob(str(dir_name) + '/*.jpg') or glob.glob(str(dir_name) + '/*.png') or glob.glob(str(dir_name) + '/*.gif'):
+        img = cv2.imread(filename)
+        #height, width, layers = img.shape
+        #size = (width,height)
+        #print(size)
+        print(filename)
+        img = cv2.resize(img, (1920,1080))
+        img_array.append(img)
+
+#create video
+    if os.path.isfile(str(dir_name) + '/' + str(vid_name)) is False:
+        out = cv2.VideoWriter(vid_name, cv2.VideoWriter_fourcc(*'DIVX'), 3, (1920,1080))
+
+    else:
+        print('WARNING: video already exists and will be overwritten')
+        os.remove(str(dir_name) + '/' + str(vid_name))
+        out = cv2.VideoWriter(vid_name, cv2.VideoWriter_fourcc(*'DIVX'), 3, (1920,1080))
+
+    print(len(img_array))
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
+    shutil.move(vid_name, dir_name)
 
     sleep ( 3 )
-    shutil.rmtree('media')
+    #shutil.rmtree('media')
 
 
 
@@ -88,8 +131,4 @@ print(images[1])
 print(images[0])
 
 
-#tweets = user_tweets(api,'Donovan01060515')
-#print(len(tweets))
-#print(tweets[0])
-
-vid_creator(images, 0)
+vid_creator(images, 'media', 'my_vid.avi')

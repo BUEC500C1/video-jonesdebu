@@ -1,1 +1,8 @@
 tweepy
+imageio
+PyQt5
+Numpy
+PyOpengl
+visvis
+requests
+wget

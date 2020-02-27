@@ -76,11 +76,11 @@ def vid_creator(images, dir_name, vid_name):
 #downlaod images and move them to the media folder
     array_len = len(images)
     for index in range(array_len):
-        if images[index].find('http://') is 0: # entry is a media_url with http:// at the beginning of the string
+        if images[index].find('http://') == 0: # entry is a media_url with http:// at the beginning of the string
             img_filename = wget.download(images[index])
             print(img_filename) # for testing
             print(str(dir_name) + '/' + str(img_filename))
-            if os.path.isfile(str(dir_name) + '/' + str(img_filename)) == False:
+            if os.path.isfile(str(dir_name) + '/' + str(img_filename)) is False:
                 shutil.move(img_filename, dir_name)
             else:
                 os.remove(img_filename)

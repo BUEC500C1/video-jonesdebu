@@ -80,7 +80,7 @@ def vid_creator(images, dir_name, vid_name):
             img_filename = wget.download(images[index])
             print(img_filename) # for testing
             print(str(dir_name) + '/' + str(img_filename))
-            if os.path.isfile(str(dir_name) + '/' + str(img_filename)) is False:
+            if os.path.isfile(str(dir_name) + '/' + str(img_filename)) == False:
                 shutil.move(img_filename, dir_name)
             else:
                 os.remove(img_filename)

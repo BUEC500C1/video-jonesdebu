@@ -11,6 +11,7 @@ import shutil
 import cv2
 import numpy as np
 import glob
+import configparser
 
 #   using code provided by Stefan as a guide for keys file parsing and exception handling:
 #   https://github.com/BUEC500C1/video-djtrinh/blob/71cbafb28eb6f86e4c59aacd63b3ee9b458a3032/twitter_api.py#L5
@@ -21,15 +22,16 @@ import glob
 
 # User requires consumer_key, consumer_secret, key, secret, and userid
 
-#def init_keys(consumer_key, consumer_secret, key, secret):
-    #OuthHandler
-consumer_key = 'JBuEXV3EgqbsgIe2PUQf9YtRy'
-consumer_secret = 'AaoIK1QkznGO9pfasUnVMzzaWExPQGvO1QWtDcmdgB9wdkWel7'
-key = '1222366331825090560-YzbK3HyrVsr1Cp0JtNY2k88ttegIJN'
-secret = 'v6gQMToztBiD5nEwNLoNIkxqlqBVVm5nkoVWTFwtv78Y5'
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(key, secret)
-api = tweepy.API(auth)
+def create_api(path):
+    #OAuthHandler and configparser
+    config = configparser.ConfigParser()
+    config.read(path)
+    auth = tweepy.OAuthHandler(config.get('auth', 'consumer_key').strip(), config.get('auth', 'consumer_secret').strip())
+    auth.set_access_token(config.get('auth', 'access_token').strip(), config.get('auth', 'access_secret').strip())
+    api = tweepy.API(auth)
+    return api
+
+
 
 #get media photos
 def user_images(api, username):
@@ -84,23 +86,16 @@ def vid_creator(images, dir_name, vid_name):
                 shutil.move(img_filename, dir_name)
             else:
                 os.remove(img_filename)
-                #im = imageio.imread(images[index])
-                #response = requests.get(images[index])
-                #img = Image.open(BytesIO(response.content))
-                #img.show()
-                #sleep( 3 )
+
         else:
-            print("nothin")
+            print(" ")
             #convert text to image, save file, and move it to the media folder
+
     #outside of the loop create the video, display it, then delete the media directory for clean up
     img_array = []
     file_types = ('*.jpg', '*.png')
     for filename in glob.glob(str(dir_name) + '/*.jpg') or glob.glob(str(dir_name) + '/*.png') or glob.glob(str(dir_name) + '/*.gif'):
         img = cv2.imread(filename)
-        #height, width, layers = img.shape
-        #size = (width,height)
-        #print(size)
-        print(filename)
         img = cv2.resize(img, (1920,1080))
         img_array.append(img)
 
@@ -123,6 +118,7 @@ def vid_creator(images, dir_name, vid_name):
     #shutil.rmtree('media')
 
 
+api = create_api("keys")
 
 #test to put in pytest
 images = user_images(api, 'Donovan01060515')

@@ -7,3 +7,4 @@ visvis
 requests
 wget
 opencv-python
+configparser

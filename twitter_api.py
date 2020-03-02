@@ -1,7 +1,6 @@
 import tweepy
 from PIL import Image, ImageDraw, ImageFont
 import os
-import visvis as vv
 from time import sleep
 import imageio
 import requests

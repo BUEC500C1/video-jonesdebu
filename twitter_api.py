@@ -12,6 +12,8 @@ import cv2
 import numpy as np
 import glob
 import configparser
+import base64
+import textwrap
 
 #   using code provided by Stefan as a guide for keys file parsing and exception handling:
 #   https://github.com/BUEC500C1/video-djtrinh/blob/71cbafb28eb6f86e4c59aacd63b3ee9b458a3032/twitter_api.py#L5
@@ -72,28 +74,45 @@ def vid_creator(images, dir_name, vid_name):
         print("Directory already exists. Media will be added to the existing directory of the same name")
 
     if '.avi' not in vid_name:
-        print('ERROR: vid_name must have .avi extension')
+        vid_name = vid_name + '.avi'
         return
 
 #downlaod images and move them to the media folder
+    count = 0
     array_len = len(images)
     for index in range(array_len):
         if images[index].find('http://') == 0: # entry is a media_url with http:// at the beginning of the string
             img_filename = wget.download(images[index])
-            print(img_filename) # for testing
-            print(str(dir_name) + '/' + str(img_filename))
             if os.path.isfile(str(dir_name) + '/' + str(img_filename)) is False:
                 shutil.move(img_filename, dir_name)
             else:
                 os.remove(img_filename)
 
         else:
-            print(" ")
-            #convert text to image, save file, and move it to the media folder
+            #convert text to image using base64 and PIL Image module, save file, and move it to the media folder
+            background = Image.new('RGBA', (1024, 768), (255, 255, 255, 255))
+            #font = ImageFont.truetype(r'font/Arial.ttf', 14)
+            draw = ImageDraw.Draw(background)
+            lines = textwrap.wrap(images[index], width=120)
+            x, y = 50, 225
+            for line in lines:
+                draw.text(((x), y), line, font=None, fill="black")
+                y += 15
+
+            if os.path.isfile(str(dir_name) + '/' + str(images[index])):
+                background.save(str(images[index]) + str(count) + '.png')
+                shutil.move(str(images[index]) + str(count) + '.png', dir_name)
+                count+=1
+
+            else:
+                background.save(str(images[index]) + '.png')
+                shutil.move(str(images[index]) + '.png', dir_name)
+
+
 
     #outside of the loop create the video, display it, then delete the media directory for clean up
     img_array = []
-    file_types = ('*.jpg', '*.png')
+    #file_types = ('*.jpg', '*.png')
     for filename in glob.glob(str(dir_name) + '/*.jpg') or glob.glob(str(dir_name) + '/*.png') or glob.glob(str(dir_name) + '/*.gif'):
         img = cv2.imread(filename)
         img = cv2.resize(img, (1920,1080))
@@ -108,7 +127,6 @@ def vid_creator(images, dir_name, vid_name):
         os.remove(str(dir_name) + '/' + str(vid_name))
         out = cv2.VideoWriter(vid_name, cv2.VideoWriter_fourcc(*'DIVX'), 3, (1920,1080))
 
-    print(len(img_array))
     for i in range(len(img_array)):
         out.write(img_array[i])
     out.release()
@@ -123,8 +141,7 @@ api = create_api("keys")
 #test to put in pytest
 images = user_images(api, 'Donovan01060515')
 print(len(images))
-print(images[1])
-print(images[0])
+
 
 
 vid_creator(images, 'media', 'my_vid.avi')

@@ -10,7 +10,7 @@ import threading
 #define some dummy worker functions for testing
 def worker1( a, b ):
     print(str(a) + str(b))
-    sleep(1)
+    sleep(3)
 
 def worker2( a, b ):
     print(str(a) + str(b))
@@ -51,20 +51,21 @@ def muti_thread_queue(q, func_name, args):
         print("active thread count:" + ' ' + str(threading.active_count()))
         print()
 
-    sleep(3)
     for thread in range(array_length):
         if threads[thread].is_alive() is False:
             print(str(threads[thread].name) + ' is dead')
+
+
+
+
 
 #return statement does not work to execute in thread
 #worker2() # prints nothing
 #a = worker2() # printing a prints what worker2() returns
 #print(a)
 
-#TODO: 1. Figure out how to get the functions to run aftter getting them from Queue.get()
-# start thread then subprocess library to run thread
 
-#there are three threads running at the end because workers 1 and 2 are sleeping when worker#3 starts
+
 q = queue.Queue()
 muti_thread_queue(q, worker1, ('worker1 ', 'is working'))
 muti_thread_queue(q, worker2, ('worker2 ', 'is working'))

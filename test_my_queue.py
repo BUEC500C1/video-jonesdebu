@@ -7,13 +7,14 @@ import pytest
 import queue
 from time import sleep
 import threading
-from queue_api import muti_thread_queue
+from queue_api import muti_thread_queue, thread_check
+
 def test_placeholder():
     pass
 
 def worker1( a, b ):
     print(str(a) + str(b))
-    sleep(3)
+    sleep(4)
 
 def worker2( a, b ):
     print(str(a) + str(b))
@@ -21,7 +22,7 @@ def worker2( a, b ):
 
 def worker3( a, b ):
     print(str(a) + str(b))
-    
+
 
 def test_multi_thread_queue():
 

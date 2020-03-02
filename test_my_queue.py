@@ -7,7 +7,7 @@ import pytest
 import queue
 from time import sleep
 import threading
-from queue_api import muti_thread_queue, thread_check
+from queue_api import muti_thread_queue
 
 def test_placeholder():
     pass

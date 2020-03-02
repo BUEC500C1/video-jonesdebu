@@ -47,6 +47,7 @@ def muti_thread_queue(q, func_name, args):
         # Start the threads and display the active numebr of threads each time a new threwad starts
         print("starting" + ' ' + str(threads[thread].name))
         threads[thread].start()
+        print()
         print("active thread count:" + ' ' + str(threading.active_count()))
         print()
 

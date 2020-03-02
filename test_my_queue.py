@@ -11,18 +11,20 @@ from queue_api import muti_thread_queue
 def test_placeholder():
     pass
 
+def worker1( a, b ):
+    print(str(a) + str(b))
+    sleep(3)
+
+def worker2( a, b ):
+    print(str(a) + str(b))
+    sleep(2)
+
+def worker3( a, b ):
+    print(str(a) + str(b))
+    
+
 def test_multi_thread_queue():
-    def worker1( a, b ):
-        print(str(a) + str(b))
-        sleep(1)
 
-    def worker2( a, b ):
-        print(str(a) + str(b))
-        sleep(1)
-
-    def worker3( a, b ):
-        print(str(a) + str(b))
-        sleep(1)
 
     q = queue.Queue()
     muti_thread_queue(q, worker1, ('worker1 ', 'is working'))

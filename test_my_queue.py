@@ -14,11 +14,11 @@ def test_placeholder():
 
 def worker1( a, b ):
     print(str(a) + str(b))
-    sleep(3)
+
 
 def worker2( a, b ):
     print(str(a) + str(b))
-    sleep(1)
+    
 
 def worker3( a, b ):
     print(str(a) + str(b))

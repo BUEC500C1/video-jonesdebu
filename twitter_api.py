@@ -71,6 +71,7 @@ def vid_creator(images, dir_name, vid_name):
         os.mkdir(dir_name)
     elif os.path.isdir(dir_name) is True:
         print("Directory already exists. Media will be added to the existing directory of the same name")
+        print()
 
     if '.avi' not in vid_name:
         vid_name = vid_name + '.avi'
@@ -88,9 +89,8 @@ def vid_creator(images, dir_name, vid_name):
                 os.remove(img_filename)
 
         else:
-            #convert text to image using base64 and PIL Image module, save file, and move it to the media folder
-            background = Image.new('RGBA', (1024, 768), (255, 255, 255, 255))
-            #font = ImageFont.truetype(r'font/Arial.ttf', 14)
+            #convert text to image save file, and move it to the media folder
+            background = Image.new('RGB', (1920, 1080), (255, 255, 255, 255))
             draw = ImageDraw.Draw(background)
             lines = textwrap.wrap(images[index], width=120)
             x, y = 50, 225
@@ -98,21 +98,33 @@ def vid_creator(images, dir_name, vid_name):
                 draw.text(((x), y), line, font=None, fill="black")
                 y += 15
 
-            if os.path.isfile(str(dir_name) + '/' + str(images[index])):
-                background.save(str(images[index]) + str(count) + '.png')
-                shutil.move(str(images[index]) + str(count) + '.png', dir_name)
-                count+=1
+            #handle the case that a tweet picture already exists in the media directory
+            if os.path.isfile(str(dir_name) + '/' + str(images[index][0]) + '.jpg') is True:
+                print('WARNING: ' + str(dir_name) + '/' + str(images[index][0]) +'.jpg already exists but a copy will be made')
+                print()
 
-            else:
-                background.save(str(images[index]) + '.png')
-                shutil.move(str(images[index]) + '.png', dir_name)
+                while os.path.isfile(str(dir_name) + '/' + str(images[index][0]) + str(count) + '.jpg') is True:
+                    print('WARNING: ' + str(dir_name) + '/' + str(images[index][0]) + str(count) + '.jpg already exists but a copy will be made')
+                    count+=1
 
+                # right now to keep filenames short the API will use the first character of a tweet and whatever count increment as the filename
+                background.save(str(images[index][0]) + str(count) + '.jpg')
+                shutil.move(str(images[index][0]) + str(count) + '.jpg', dir_name)
 
+            elif os.path.isfile(str(dir_name) + '/' + str(images[index][0]) + '.jpg') is False:
+                background.save(str(images[index][0]) + '.jpg')
+                shutil.move(str(images[index][0]) + '.jpg', dir_name)
 
     #outside of the loop create the video, display it, then delete the media directory for clean up
     img_array = []
-    #file_types = ('*.jpg', '*.png')
-    for filename in glob.glob(str(dir_name) + '/*.jpg') or glob.glob(str(dir_name) + '/*.png') or glob.glob(str(dir_name) + '/*.gif'):
+    for filename in glob.glob(str(dir_name) + '/*.jpg'):
+        print(filename)
+        img = cv2.imread(filename)
+        img = cv2.resize(img, (1920,1080))
+        img_array.append(img)
+
+    for filename in glob.glob(str(dir_name) + '/*.png'): #not optimal to use 2 for loops but only current working solution
+        print(filename)
         img = cv2.imread(filename)
         img = cv2.resize(img, (1920,1080))
         img_array.append(img)
@@ -129,10 +141,11 @@ def vid_creator(images, dir_name, vid_name):
     for i in range(len(img_array)):
         out.write(img_array[i])
     out.release()
+    #move the video to the media directory
     shutil.move(vid_name, dir_name)
 
-    sleep ( 3 )
-    #shutil.rmtree('media')
+
+
 
 
 api = create_api("keys")

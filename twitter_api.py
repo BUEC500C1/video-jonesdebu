@@ -75,7 +75,7 @@ def vid_creator(images, dir_name, vid_name):
 
     if '.avi' not in vid_name:
         vid_name = vid_name + '.avi'
-        return
+
 
 #downlaod images and move them to the media folder
     count = 0
@@ -118,7 +118,6 @@ def vid_creator(images, dir_name, vid_name):
     #outside of the loop create the video, display it, then delete the media directory for clean up
     img_array = []
     for filename in glob.glob(str(dir_name) + '/*.jpg'):
-        print(filename)
         img = cv2.imread(filename)
         img = cv2.resize(img, (1920,1080))
         img_array.append(img)
@@ -143,17 +142,3 @@ def vid_creator(images, dir_name, vid_name):
     out.release()
     #move the video to the media directory
     shutil.move(vid_name, dir_name)
-
-
-
-
-
-api = create_api("keys")
-
-#test to put in pytest
-images = user_images(api, 'Donovan01060515')
-print(len(images))
-
-
-
-vid_creator(images, 'media', 'my_vid.avi')

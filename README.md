@@ -31,3 +31,6 @@
 * func_name is the name of the function that you would like to add to the Queue
 * args are the arguments for the function that you would like to add to the queue. These arguments must be entered as a tuple ex: (.., .., (arg a, argb))
 * Ex: muti_thread_queue(q, worker, ('a', 'b'))
+
+##Note
+* Final pushes do not pass pytest because of missing keys file but do pass when a keys file is present.

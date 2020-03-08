@@ -7,17 +7,7 @@ import threading
 #import queue function and twitter function into a main program
 #input = queue to be handled function name and arguments
 
-#define some dummy worker functions for testing
-def worker1( a, b ):
-    print(str(a) + str(b))
-    sleep(3)
 
-def worker2( a, b ):
-    print(str(a) + str(b))
-    sleep(1)
-
-def worker3( a, b ):
-    print(str(a) + str(b))
 
 #check the items in the queue (empty or not and if not how many items)
 def queue_check(q):
@@ -66,10 +56,6 @@ def muti_thread_queue(q, func_name, args):
 
 
 
-q = queue.Queue()
-muti_thread_queue(q, worker1, ('worker1 ', 'is working'))
-muti_thread_queue(q, worker2, ('worker2 ', 'is working'))
-muti_thread_queue(q, worker3, ('worker3 ', 'is working'))
 
 
 #becasue we sleep for 3 seconds before checking this they should all be false

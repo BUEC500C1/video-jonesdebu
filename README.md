@@ -19,3 +19,15 @@
   * images is an array of media_urls and or tweet text that can be retrieved with a user_images function call
   * dir_name is the name of the directory in which you would like to create and save the media retrieved from the timeline and the video specified by vid_name
   * vid_name is the name of the video you would like to create
+
+### Queue API
+##  queue_check(q)
+* A simple function to see if the queue is empty and if not how many threads are running
+* q is a Queue object
+
+##  muti_thread_queue(q, func_name, args)
+* This function appends a function and its arguments to a queue and makes the queue multi-threaded by starting a separate thread for each function placed on the queue
+* q is a Queue object that you would like to add functions to in order to multi-thread them in order to run multiple functions at a time in a FIFO queue structure
+* func_name is the name of the function that you would like to add to the Queue
+* args are the arguments for the function that you would like to add to the queue. These arguments must be entered as a tuple ex: (.., .., (arg a, argb))
+* Ex: muti_thread_queue(q, worker, ('a', 'b'))

@@ -6,3 +6,5 @@ def test_user_images():
     images = user_images(api, 'Donovan01060515')
     #This user has 6 items in their timeline so the length of the images_array will be 6.
     assert len(images) == 6
+
+#Test that the video exists
